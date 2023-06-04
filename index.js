@@ -36,16 +36,15 @@ app.use("/login", (req, res) => {
     " "
   );
 
-  res.redirect(
-    "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
-        client_id: CLIENT_ID,
-        response_type: "code",
-        redirect_uri: REDIRECT_URI,
-        state: state,
-        scope: scope,
-      })
-  );
+  const queryParams = querystring.stringify({
+    client_id: CLIENT_ID,
+    response_type: "code",
+    redirect_uri: REDIRECT_URI,
+    state: state,
+    scope: scope,
+  });
+
+  res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 });
 
 app.get("/callback", async (req, res) => {

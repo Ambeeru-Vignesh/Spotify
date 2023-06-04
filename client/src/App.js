@@ -1,12 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   useLocation,
 } from "react-router-dom";
-import "./App.css";
 import { accessToken, logout } from "./Spotify";
+import {
+  Login,
+  TopArtists,
+  TopTracks,
+  Playlists,
+  Playlist,
+  Profile,
+} from "./pages";
 import { GlobalStyle } from "./styles";
 import styled from "styled-components/macro";
 
@@ -26,65 +33,52 @@ const StyledLogoutButton = styled.button`
   }
 `;
 
+// Scroll to top of page when changing routes
+// https://reactrouter.com/web/guides/scroll-restoration/scroll-to-top
 function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  return null;
 }
 
 function App() {
   const [token, setToken] = useState(null);
+
   useEffect(() => {
     setToken(accessToken);
-    console.log(token);
   }, []);
 
   return (
-    <div className="App">
+    <div className="app">
       <GlobalStyle />
 
-      <header className="App-header">
-        {!token ? (
-          <a
-            className="App-link"
-            href="http://localhost:5000/login"
-            target="_self"
-            rel="noopener noreferrer"
-          >
-            Login to Spotify
-          </a>
-        ) : (
-          <>
-            <h1>Logged In!</h1>
-            <StyledLogoutButton onClick={logout}>Log Out</StyledLogoutButton>
+      {!token ? (
+        <Login />
+      ) : (
+        <>
+          <StyledLogoutButton onClick={logout}>Log Out</StyledLogoutButton>
 
-            <Router>
-              <ScrollToTop />
+          <Router>
+            <ScrollToTop />
 
-              <Switch>
-                <Route path="/top-artists">
-                  <TopArtists />
-                </Route>
-                <Route path="/top-tracks">
-                  <TopTracks />
-                </Route>
-                <Route path="/playlists/:id">
-                  <Playlist />
-                </Route>
-                <Route path="/playlists">
-                  <Playlists />
-                </Route>
-                <Route path="/">
-                  <Profile />
-                </Route>
-              </Switch>
-            </Router>
-            <button onClick={logout}>Logout</button>
-          </>
-        )}
-      </header>
+            <Routes>
+              <Route path="/top-artists" element={<TopArtists />} />
+
+              <Route path="/top-tracks" element={<TopTracks />} />
+
+              <Route path="/playlists/:id" element={<Playlist />} />
+
+              <Route path="/playlists" element={<Playlists />} />
+
+              <Route path="/" element={<Profile />} />
+            </Routes>
+          </Router>
+        </>
+      )}
     </div>
   );
 }

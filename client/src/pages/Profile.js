@@ -37,7 +37,7 @@ const Profile = () => {
     };
 
     catchErrors(fetchData());
-  }, [getCurrentUserPlaylists]);
+  }, []);
 
   return (
     <>
